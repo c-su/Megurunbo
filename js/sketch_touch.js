@@ -14,7 +14,7 @@ var img_h = 0.0;
 //var koma_click_num = 0;
 //var button_size = 0.0;
 var button;
-//var userAgent = window.navigator.userAgent.toLowerCase();  
+//var userAgent = window.navigator.userAgent.toLowerCase();
 
 function preload() {
 	file = loadStrings("./csv/koma_info.csv");
@@ -68,10 +68,10 @@ function draw() {
 	// for testing
 	//fill(0);
 	//text("W:"+width+", H"+height, 30, 30);
-	//text("Speed:"+speed_rate, 30, 60); 
+	//text("Speed:"+speed_rate, 30, 60);
 	//text("Touch?:"+is_touch_device, 30, 60);
 	//text("Page:"+page_num+", Koma:"+koma_click_num, 30, 90);
-	
+
 }
 
 function touchStarted() {
@@ -83,7 +83,7 @@ function touchMoved() {
 	page[page_num].move(touchX, touchY, tap_start_x, tap_start_y);
 }
 
-function touchEnded() {	
+function touchEnded() {
 	if(is_tap()){
 	  if (button.is_left_tapped(touchX, touchY)) {
 	    if (page_num !== page_len - 1) {
@@ -100,7 +100,7 @@ function touchEnded() {
 	    page[page_num].clicked_koma_num(touchX, touchY);
 	  }
 	}
-	
+
 }
 
 function is_tap(){
