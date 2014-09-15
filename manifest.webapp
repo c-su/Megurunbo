@@ -1,0 +1,12 @@
+{
+  "version": "2.0",
+  "name": "Megurunbo",
+  "description": "Megurunbo App.",
+  "launch_path": "/index.html",
+  "icons": {},
+  "developer": {
+    "name": "Team Megurunbo",
+    "url": "http://amateras.wsd.kutc.kansai-u.ac.jp/"
+  },
+  "default_locale": "ja"
+}
