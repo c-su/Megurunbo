@@ -56,14 +56,14 @@ function setup() {
             Math.floor(parseInt(data[i][4]) * resize_rate), Math.floor(parseInt(data[i][5]) * resize_rate)
         );
     }
-
+		/*
     var sparqlClient = new SPARQLClient();
     sparqlClient.setPlaceQuery(['感応院']);
     sparqlClient.request(function(re) {
         var test = re.getJson();
         console.log(test);
     });
-
+		*/
 }
 
 function draw() {
@@ -93,13 +93,14 @@ function mouseDragged() {
 
 function mouseReleased() {
     if (is_tap()) {
-        if (button.is_left_tapped(mouseX, mouseY)) {
+    				// Next Button
+        if (button.is_next_tapped(mouseX, mouseY)) {
             if (page_num !== page_len - 1) {
                 page_num++;
                 page[page_num].init();
             }
-            // Right Button
-        } else if (button.is_right_tapped(mouseX, mouseY)) {
+            // Back Button
+        } else if (button.is_back_tapped(mouseX, mouseY)) {
             if (page_num !== 0) {
                 page_num--;
                 page[page_num].init();
