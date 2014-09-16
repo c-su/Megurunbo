@@ -15,6 +15,9 @@ var img_h = 0.0;
 //var button_size = 0.0;
 var button;
 //var userAgent = window.navigator.userAgent.toLowerCase();
+var sparqlClient = new SPARQLClient();
+var icons = [];
+var infoFlag = false;
 
 function preload() {
     file = loadStrings("./csv/koma_info.csv");
@@ -56,14 +59,6 @@ function setup() {
             Math.floor(parseInt(data[i][4]) * resize_rate), Math.floor(parseInt(data[i][5]) * resize_rate)
         );
     }
-		/*
-    var sparqlClient = new SPARQLClient();
-    sparqlClient.setPlaceQuery(['感応院']);
-    sparqlClient.request(function(re) {
-        var test = re.getJson();
-        console.log(test);
-    });
-		*/
 }
 
 function draw() {
@@ -72,6 +67,15 @@ function draw() {
     page[page_num].stop_at_edge();
     page[page_num].display();
     button.display();
+
+    if (infoFlag) {
+        for (var i = 0; i < icons.length; i++) {
+            icons[i].display(page[page_num].x, page[page_num].y);
+            if (icons[i].isTouch(touchX, touchY)) {
+                icons[i].setTouchFlag();
+            }
+        }
+    }
 
     // for testing
     //fill(0);
@@ -93,20 +97,85 @@ function mouseDragged() {
 
 function mouseReleased() {
     if (is_tap()) {
-    				// Next Button
+        // Next Button
         if (button.is_next_tapped(mouseX, mouseY)) {
             if (page_num !== page_len - 1) {
+                infoFlag = false;
                 page_num++;
                 page[page_num].init();
             }
             // Back Button
         } else if (button.is_back_tapped(mouseX, mouseY)) {
             if (page_num !== 0) {
+                infoFlag = false;
                 page_num--;
                 page[page_num].init();
             }
+        } else if (button.is_info_tapped(mouseX, mouseY)) {
+            if (infoFlag) {
+                icons = [];
+                infoFlag = false;
+            } else {
+                sparqlClient.setKomaQuery(page[page_num].get_koma_num());
+                sparqlClient.request(function(re) {
+                    var tmp = re.getJson();
+                    var komaObjects = tmp.results.bindings;
+                    console.log(komaObjects);
+
+                    var foods = [];
+                    var foodsKoma = [];
+                    var places = [];
+                    var placesKoma = [];
+                    for (var i = 0; i < komaObjects.length; i++) {
+                        if (typeof komaObjects[i]['food'] !== "undefined") {
+                            foods.push(komaObjects[i]['food'].value);
+                            for (var j = 0; j < page[page_num].komaArray.length; j++) {
+                                if (komaObjects[i]['koma'].value == page[page_num].komaArray[j].koma_num) {
+                                    foodsKoma.push(j);
+                                }
+                            }
+                        }
+                        if (typeof komaObjects[i]['place'] !== "undefined") {
+                            places.push(komaObjects[i]['place'].value);
+                            places.push(komaObjects[i]['koma'].value);
+                        }
+                        komaObjects[i]['koma'].value;
+                    }
+
+
+                    if (foods.length !== 0) {
+                        sparqlClient.setFoodQuery(foods);
+                        sparqlClient.request(function(re) {
+                            var tmp = re.getJson();
+                            var foodObjects = tmp.results.bindings;
+                            console.log(foodObjects);
+                            for (var i = 0; i < foodObjects.length; i++) {
+                                var icon = new Icon('food', foodObjects[i]['label'].value, foodObjects[i]['des'].value);
+                                var position = page[page_num].get_koma_position(foodsKoma[i]);
+                                icon.setPosition(position['posX'], position['posY']);
+                                icons.push(icon);
+                            }
+
+                            infoFlag = !infoFlag;
+                        });
+                    }
+                    if (places.length !== 0) {
+                        sparqlClient.setFoodQuery(places);
+                        sparqlClient.request(function(re) {
+                            var tmp = re.getJson();
+                            console.log(tmp);
+                        });
+                    }
+                });
+            }
         } else {
             page[page_num].clicked_koma_num(mouseX, mouseY);
+        }
+
+        if (infoFlag) {
+            for (var i = 0; i < icons.length; i++) {
+
+            }
         }
     }
 

@@ -9,7 +9,7 @@ Button.prototype.display = function() {
 	this.display_info();
 	this.display_back();
 	this.display_next();
-}
+};
 
 // Info button
 Button.prototype.display_info = function() {
@@ -17,7 +17,7 @@ Button.prototype.display_info = function() {
 	tint(255, 200);
 	image(this.info_img, width-this.button_size, this.button_size/4, this.button_size, this.button_size);
 	pop();
-}
+};
 
 // Next button
 Button.prototype.display_next = function() {
@@ -25,7 +25,7 @@ Button.prototype.display_next = function() {
 	tint(255, 200);
 	image(this.next_img, 0, height / 2, this.button_size, this.button_size);
 	pop();
-}
+};
 
 // Back button
 Button.prototype.display_back = function() {
@@ -33,16 +33,20 @@ Button.prototype.display_back = function() {
 	tint(255, 200);
 	image(this.back_img, width - this.button_size, height / 2, this.button_size, this.button_size);
 	pop();
-}
+};
 
 Button.prototype.is_next_tapped = function(current_x, current_y) {
 	return (current_x > 0 && current_x < this.button_size && current_y > (height / 2) && current_y < (height / 2) + this.button_size);
-}
+};
 
 
 Button.prototype.is_back_tapped = function(current_x, current_y) {
 	return (current_x > width - this.button_size && current_x < width && current_y > (height / 2) && current_y < (height / 2) + this.button_size);
-}
+};
+
+Button.prototype.is_info_tapped = function(current_x, current_y) {
+	return current_x > width-this.button_size && current_x < width-this.button_size + this.button_size && current_y > this.button_size/4 && current_y < this.button_size/4 + this.button_size;
+};
 
 /*
 Button.prototype.display_info = function() {
@@ -53,7 +57,7 @@ Button.prototype.display_info = function() {
 	rectMode(CENTER);
 	rect(width-this.button_size/1.5, this.button_size/1.5, this.button_size/5, this.button_size/1.5);
 	rect(width-this.button_size/1.5, this.button_size/1.5, this.button_size/1.5, this.button_size/5);
-	pop();	
+	pop();
 }
 */
 /*
@@ -68,7 +72,7 @@ Button.prototype.display_next = function() {
 	         this.button_size*2/3, height / 2 + this.button_size/4,
 	         this.button_size*2/3, height / 2 + this.button_size - this.button_size/4);
 	pop();
-	
+
 }
 */
 /*

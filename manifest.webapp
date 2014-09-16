@@ -3,7 +3,9 @@
   "name": "Megurunbo",
   "description": "Megurunbo App.",
   "launch_path": "/index.html",
-  "icons": {},
+  "icons": {
+  "128": "/img/icon/icon.png"
+  },
   "developer": {
     "name": "Team Megurunbo",
     "url": "http://amateras.wsd.kutc.kansai-u.ac.jp/"
