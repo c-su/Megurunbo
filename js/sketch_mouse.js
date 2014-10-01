@@ -1,16 +1,16 @@
-var page_len = 17;
-var speed_rate = 0.0;
-var page_num = 0;
-var tap_start_x;
-var tap_start_y;
+var pageLength = 17;
+var speedRate = 0.0;
+var pageNum = 0;
+var startedTapX;
+var startedTapY;
 var page = [];
 var file = [];
 var data = [];
-var img_origin_w = 700;
-var img_origin_h = 1020;
-var img_w = 0.0;
-var resize_rate = 0.0;
-var img_h = 0.0;
+var imageOriginWidth = 700;
+var imageOriginHeight = 1020;
+var imageWidth = 0.0;
+var resizeRate = 0.0;
+var imageHeight = 0.0;
 //var koma_click_num = 0;
 //var button_size = 0.0;
 var button;
@@ -33,15 +33,15 @@ function setup() {
         createCanvas(windowWidth - 20, windowHeight);
     }
     button = new Button();
-    img_w = width * 3 / 2;
-    resize_rate = img_w / img_origin_w;
-    img_h = img_origin_h * resize_rate;
+    imageWidth = width * 3 / 2;
+    resizeRate = imageWidth / imageOriginWidth;
+    imageHeight = imageOriginHeight * resizeRate;
     //button_size = width / 7;
-    speed_rate = 1 / resize_rate;
+    speedRate = 1 / resizeRate;
     frameRate(15);
     textSize(32);
-    for (i = 0; i < page_len; i++) {
-        page[i] = new Page("./img/page/page" + i + ".jpg", img_w, img_h, speed_rate);
+    for (i = 0; i < pageLength; i++) {
+        page[i] = new Page("./img/page/page" + i + ".jpg", imageWidth, imageHeight, speedRate);
     }
 
     for (i = 0; i < file.length; i++) {
@@ -53,10 +53,10 @@ function setup() {
     }
 
     for (i = 1; i < file.length; i++) {
-        page[parseInt(data[i][0])].koma_add(
+        page[parseInt(data[i][0])].addKoma(
             parseInt(data[i][1]),
-            Math.floor(parseInt(data[i][2]) * resize_rate), Math.floor(parseInt(data[i][3]) * resize_rate),
-            Math.floor(parseInt(data[i][4]) * resize_rate), Math.floor(parseInt(data[i][5]) * resize_rate)
+            Math.floor(parseInt(data[i][2]) * resizeRate), Math.floor(parseInt(data[i][3]) * resizeRate),
+            Math.floor(parseInt(data[i][4]) * resizeRate), Math.floor(parseInt(data[i][5]) * resizeRate)
         );
     }
 }
@@ -64,13 +64,13 @@ function setup() {
 function draw() {
     var i, j;
     background(255);
-    page[page_num].stop_at_edge();
-    page[page_num].display();
+    page[pageNum].stopAtEdge();
+    page[pageNum].display();
     button.display();
 
     if (infoFlag) {
         for (var i = 0; i < icons.length; i++) {
-            icons[i].display(page[page_num].x, page[page_num].y);
+            icons[i].display(page[pageNum].x, page[pageNum].y);
             if (icons[i].isTouch(touchX, touchY)) {
                 icons[i].setTouchFlag();
             }
@@ -80,45 +80,45 @@ function draw() {
     // for testing
     //fill(0);
     //text("W:"+width+", H"+height, 30, 30);
-    //text("Speed:"+speed_rate, 30, 60);
+    //text("Speed:"+speedRate, 30, 60);
     //text("Touch?:"+is_touch_device, 30, 60);
-    //text("Page:"+page_num+", Koma:"+koma_click_num, 30, 90);
+    //text("Page:"+pageNum+", Koma:"+koma_click_num, 30, 90);
 
 }
 
 function mousePressed() {
-    tap_start_x = mouseX;
-    tap_start_y = mouseY;
+    startedTapX = mouseX;
+    startedTapY = mouseY;
 }
 
 function mouseDragged() {
-    page[page_num].move(mouseX, mouseY, tap_start_x, tap_start_y);
+    page[pageNum].move(mouseX, mouseY, startedTapX, startedTapY);
 }
 
 function mouseReleased() {
     if (is_tap()) {
         // Next Button
         if (button.is_next_tapped(mouseX, mouseY)) {
-            if (page_num !== page_len - 1) {
+            if (pageNum !== pageLength - 1) {
                 infoFlag = false;
-                page_num++;
-                page[page_num].init();
+                pageNum++;
+                page[pageNum].init();
             }
             // Back Button
         } else if (button.is_back_tapped(mouseX, mouseY)) {
-            if (page_num !== 0) {
+            if (pageNum !== 0) {
                 infoFlag = false;
-                page_num--;
-                page[page_num].init();
+                pageNum--;
+                page[pageNum].init();
             }
         } else if (button.is_info_tapped(mouseX, mouseY)) {
             if (infoFlag) {
                 icons = [];
                 infoFlag = false;
             } else {
-                sparqlClient.setKomaQuery(page[page_num].get_koma_num());
-                sparqlClient.request(function(re) {
-                    var tmp = re.getJson();
+                sparqlClient.setKomaQuery(page[pageNum].getKomaNumFirstLast());
+                sparqlClient.request(function(req) {
+                    var tmp = req.getJson();
                     var komaObjects = tmp.results.bindings;
                     console.log(komaObjects);
 
@@ -129,8 +129,8 @@ function mouseReleased() {
                     for (var i = 0; i < komaObjects.length; i++) {
                         if (typeof komaObjects[i]['food'] !== "undefined") {
                             foods.push(komaObjects[i]['food'].value);
-                            for (var j = 0; j < page[page_num].komaArray.length; j++) {
-                                if (komaObjects[i]['koma'].value == page[page_num].komaArray[j].koma_num) {
+                            for (var j = 0; j < page[pageNum].komaArray.length; j++) {
+                                if (komaObjects[i]['koma'].value == page[pageNum].komaArray[j].komaNum) {
                                     foodsKoma.push(j);
                                 }
                             }
@@ -145,13 +145,13 @@ function mouseReleased() {
 
                     if (foods.length !== 0) {
                         sparqlClient.setFoodQuery(foods);
-                        sparqlClient.request(function(re) {
-                            var tmp = re.getJson();
+                        sparqlClient.request(function(req) {
+                            var tmp = req.getJson();
                             var foodObjects = tmp.results.bindings;
                             console.log(foodObjects);
                             for (var i = 0; i < foodObjects.length; i++) {
                                 var icon = new Icon('food', foodObjects[i]['label'].value, foodObjects[i]['des'].value);
-                                var position = page[page_num].get_koma_position(foodsKoma[i]);
+                                var position = page[pageNum].getKomaPosition(foodsKoma[i]);
                                 icon.setPosition(position['posX'], position['posY']);
                                 icons.push(icon);
                             }
@@ -161,15 +161,15 @@ function mouseReleased() {
                     }
                     if (places.length !== 0) {
                         sparqlClient.setFoodQuery(places);
-                        sparqlClient.request(function(re) {
-                            var tmp = re.getJson();
+                        sparqlClient.request(function(req) {
+                            var tmp = req.getJson();
                             console.log(tmp);
                         });
                     }
                 });
             }
         } else {
-            page[page_num].clicked_koma_num(mouseX, mouseY);
+            page[pageNum].clickedKomaNum(mouseX, mouseY);
         }
 
         if (infoFlag) {
@@ -182,7 +182,7 @@ function mouseReleased() {
 }
 
 function is_tap() {
-    return (tap_start_x == mouseX && tap_start_y == mouseY);
+    return (startedTapX == mouseX && startedTapY == mouseY);
 }
 
 function is_iphone5() {

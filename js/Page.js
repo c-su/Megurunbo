@@ -1,56 +1,62 @@
 // Page Class
-function Page(img_name, img_w, img_h, speed_rate) {
+function Page(img_name, imageWidth, imageHeight, speedRate) {
 this.img = loadImage(img_name);
-this.img_w = img_w;
-this.img_h = img_h;
-this.speed_rate = speed_rate;
-this.x = width - img_w;
+this.imageWidth = imageWidth;
+this.imageHeight = imageHeight;
+this.speedRate = speedRate;
+this.x = width - imageWidth;
 this.y = 0;
 this.komaArray = [];
 }
 
-
+// ページを表示する
 Page.prototype.display = function() {
-  image(this.img, this.x, this.y, this.img_w, this.img_h);
+  image(this.img, this.x, this.y, this.imageWidth, this.imageHeight);
 };
 
-Page.prototype.move = function(current_x, current_y, tap_start_x, tap_start_y) {
-  this.x += (current_x - tap_start_x) * this.speed_rate;
-  this.y += (current_y - tap_start_y) * this.speed_rate;
+// スワイプに合わせてページを動かす
+Page.prototype.move = function(currentX, currentY, tap_start_x, tap_start_y) {
+  this.x += (currentX - tap_start_x) * this.speedRate;
+  this.y += (currentY - tap_start_y) * this.speedRate;
 };
 
-Page.prototype.koma_add = function(koma_num, koma_x, koma_y, koma_w, koma_h) {
-  this.komaArray.push(new Koma(koma_num, koma_x, koma_y, koma_w, koma_h));
+// ページにコマを追加する
+Page.prototype.addKoma = function(komaNum, komaX, komaY, komaWidth, komaHeight) {
+  this.komaArray.push(new Koma(komaNum, komaX, komaY, komaWidth, komaHeight));
 };
 
+// ページの初期設定を行う
 Page.prototype.init = function() {
-  this.x = width - this.img_w;
+  this.x = width - this.imageWidth;
   this.y = 0;
 };
 
-Page.prototype.stop_at_edge = function() {
+// ページ端まで移動したらそれ以上行かないように止める
+Page.prototype.stopAtEdge = function() {
   if (this.x > 0) {
     this.x = 0;
   }
-  if (this.x < width - this.img_w) {
-    this.x = width - this.img_w;
+  if (this.x < width - this.imageWidth) {
+    this.x = width - this.imageWidth;
   }
   if (this.y > 0) {
     this.y = 0;
   }
-  if (this.y < height - this.img_h) {
-    this.y = height - this.img_h;
+  if (this.y < height - this.imageHeight) {
+    this.y = height - this.imageHeight;
   }
 };
 
-Page.prototype.get_koma_num = function() {
+// ページ内のコマの最初と最後のコマ番号を返す
+Page.prototype.getKomaNumFirstLast = function() {
   return {
-    'from': this.komaArray[0].koma_num,
-    'to': this.komaArray[this.komaArray.length - 1].koma_num
+    'first': this.komaArray[0].komaNum,
+    'last': this.komaArray[this.komaArray.length - 1].komaNum
   };
 };
 
-Page.prototype.get_koma_position = function(num) {
+
+Page.prototype.getKomaPosition = function(num) {
   console.log(this.komaArray[num]);
   console.log(num);
   return {
@@ -60,12 +66,12 @@ Page.prototype.get_koma_position = function(num) {
   console.log();
 };
 
-Page.prototype.clicked_koma_num = function(current_x, current_y) {
+Page.prototype.clickedKomaNum = function(currentX, currentY) {
     var i;
     for (i = 0; i < this.komaArray.length; i++) {
-      if (current_x - this.x > this.komaArray[i].x && current_x - this.x < this.komaArray[i].x + this.komaArray[i].w && current_y - this.y > this.komaArray[i].y && current_y - this.y < this.komaArray[i].y + this.komaArray[i].h) {
-        console.log("koma_num: " + this.komaArray[i].koma_num + " is clicked!");
-        //koma_click_num = this.komaArray[i].koma_num;
+      if (currentX - this.x > this.komaArray[i].x && currentX - this.x < this.komaArray[i].x + this.komaArray[i].w && currentY - this.y > this.komaArray[i].y && currentY - this.y < this.komaArray[i].y + this.komaArray[i].h) {
+        console.log("komaNum: " + this.komaArray[i].komaNum + " is clicked!");
+        //koma_click_num = this.komaArray[i].komaNum;
       }
     }
 };

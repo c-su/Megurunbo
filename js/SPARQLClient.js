@@ -3,12 +3,12 @@ function SPARQLClient() {
     this.projectID = 'megurunbo';
 }
 
-SPARQLClient.prototype.setKomaQuery = function(koma) {
+SPARQLClient.prototype.setKomaQuery = function(komaFirstLast) {
     this.sparql = 'select * where {' +
         '?s <http://linkdata.org/property/rdf1s1871i#koma> ?koma.' +
         'optional {?s <http://linkdata.org/property/rdf1s1871i#food> ?food.}' +
         'optional {?s <http://linkdata.org/property/rdf1s1871i#place> ?place.}' +
-        'filter (?koma >= ' + koma['from'] + ' && ?koma <= ' + koma['to'] + ')' +
+        'filter (?koma >= ' + komaFirstLast['first'] + ' && ?koma <= ' + komaFirstLast['last'] + ')' +
         '}';
     this.projectID = 'megurunbo';
 };
