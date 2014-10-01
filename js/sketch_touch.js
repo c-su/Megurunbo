@@ -68,7 +68,7 @@ function draw() {
     page[pageNum].display();
     button.display();
 
-    if (infoFlag) {
+    if (infoFlag) { /* infoボタンを押したかどうか */
         for (var i = 0; i < icons.length; i++) {
             icons[i].display(page[pageNum].x, page[pageNum].y);
             if (icons[i].isTouch(touchX, touchY)) {
@@ -116,18 +116,20 @@ function touchEnded() {
                 icons = [];
                 infoFlag = false;
             } else {
-                sparqlClient.setKomaQuery(page[pageNum].getKomaNumFirstLast());
+                sparqlClient.setKomaQuery(page[pageNum].getKomaNumFirstLast()); /* コマ情報を取得するSPARQLクエリを生成 */
+                /* リクエスト送信 */
                 sparqlClient.request(function(req) {
                     var tmp = req.getJson();
                     var komaObjects = tmp.results.bindings;
                     console.log(komaObjects);
 
-                    var foods = [];
+                    var foods = []; //食べ物を配列として保存
                     var foodsKoma = [];
-                    var places = [];
-                    var placesKoma = [];
+                    // var places = [];
+                    // var placesKoma = [];
+                    /* 各コマに対してマッピング */
                     for (var i = 0; i < komaObjects.length; i++) {
-                        if (typeof komaObjects[i]['food'] !== "undefined") {
+                        if (typeof komaObjects[i]['food'] !== "undefined") { /* 食べ物の情報が存在していれば… */
                             foods.push(komaObjects[i]['food'].value);
                             for (var j = 0; j < page[pageNum].komaArray.length; j++) {
                                 if (komaObjects[i]['koma'].value == page[pageNum].komaArray[j].komaNum) {
@@ -135,20 +137,22 @@ function touchEnded() {
                                 }
                             }
                         }
-                        if (typeof komaObjects[i]['place'] !== "undefined") {
-                            places.push(komaObjects[i]['place'].value);
-                            places.push(komaObjects[i]['koma'].value);
-                        }
+                        /* 未実装 */
+                        // if (typeof komaObjects[i]['place'] !== "undefined") {
+                        //     places.push(komaObjects[i]['place'].value);
+                        //     places.push(komaObjects[i]['koma'].value);
+                        // }
                         komaObjects[i]['koma'].value;
                     }
 
-
+                    /* 食べ物が一つでも存在すれば，その食べ物に関する情報を取得する */
                     if (foods.length !== 0) {
                         sparqlClient.setFoodQuery(foods);
                         sparqlClient.request(function(req) {
                             var tmp = req.getJson();
                             var foodObjects = tmp.results.bindings;
                             console.log(foodObjects);
+                            /* アイコンを作成してコマ上にマッピング */
                             for (var i = 0; i < foodObjects.length; i++) {
                                 var icon = new Icon('food', foodObjects[i]['label'].value, foodObjects[i]['des'].value);
                                 var position = page[pageNum].getKomaPosition(foodsKoma[i]);
@@ -159,26 +163,20 @@ function touchEnded() {
                             infoFlag = !infoFlag;
                         });
                     }
-                    if (places.length !== 0) {
-                        sparqlClient.setFoodQuery(places);
-                        sparqlClient.request(function(req) {
-                            var tmp = req.getJson();
-                            console.log(tmp);
-                        });
-                    }
+                    /* 未実装 */
+                    // if (places.length !== 0) {
+                    //     sparqlClient.setFoodQuery(places);
+                    //     sparqlClient.request(function(req) {
+                    //         var tmp = req.getJson();
+                    //         console.log(tmp);
+                    //     });
+                    // }
                 });
             }
         } else {
             page[pageNum].clickedKomaNum(touchX, touchY);
         }
-
-        if (infoFlag) {
-            for (var i = 0; i < icons.length; i++) {
-
-            }
-        }
     }
-
 }
 
 function is_tap() {
