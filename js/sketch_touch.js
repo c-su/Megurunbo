@@ -11,23 +11,24 @@ var imageOriginHeight = 1020;
 var imageWidth = 0.0;
 var resizeRate = 0.0;
 var imageHeight = 0.0;
+var foodListDict;
 //var koma_click_num = 0;
 //var button_size = 0.0;
 var button;
 //var userAgent = window.navigator.userAgent.toLowerCase();
-var sparqlClient = new SPARQLClient();
-var icons = [];
-var infoFlag = false;
+//var infoArray = [];;
 
 function preload() {
     file = loadStrings("./csv/koma_info.csv");
+    foodListDict = loadJSON("./js/foodList.json");
 }
 
 function setup() {
     var i, j;
+    var undefined;
     var tmp = [];
 
-    if (is_iphone5()) {
+    if (isIphone5()) {
         createCanvas(960, 1365);
     } else {
         createCanvas(windowWidth - 20, windowHeight);
@@ -40,11 +41,11 @@ function setup() {
     speedRate = 1 / resizeRate;
     frameRate(15);
     textSize(32);
-    for (i = 0; i < pageLength; i++) {
+    for (i=0; i < pageLength; i++) {
         page[i] = new Page("./img/page/page" + i + ".jpg", imageWidth, imageHeight, speedRate);
     }
 
-    for (i = 0; i < file.length; i++) {
+    for (i=0; i < file.length; i++) {
         tmp = file[i].split(",");
         data[i] = [];
         for (j = 0; j < tmp.length; j++) {
@@ -52,12 +53,22 @@ function setup() {
         }
     }
 
-    for (i = 1; i < file.length; i++) {
+    for (i=1; i < file.length; i++) {
         page[parseInt(data[i][0])].addKoma(
             parseInt(data[i][1]),
             Math.floor(parseInt(data[i][2]) * resizeRate), Math.floor(parseInt(data[i][3]) * resizeRate),
             Math.floor(parseInt(data[i][4]) * resizeRate), Math.floor(parseInt(data[i][5]) * resizeRate)
         );
+    }
+    
+    for (i=0; i < pageLength; i++) {
+        for(j=0; j<page[i].komaArray.length; j++){
+            var koma = page[i].komaArray[j];
+            if(koma.num+'' in foodListDict){
+               koma.setFoodName(foodListDict[koma.num+'']);
+                console.log(koma.foodName);
+            }
+        }
     }
 }
 
@@ -66,16 +77,8 @@ function draw() {
     background(255);
     page[pageNum].stopAtEdge();
     page[pageNum].display();
-    button.display();
 
-    if (infoFlag) {
-        for (var i = 0; i < icons.length; i++) {
-            icons[i].display(page[pageNum].x, page[pageNum].y);
-            if (icons[i].isTouch(touchX, touchY)) {
-                icons[i].setTouchFlag();
-            }
-        }
-    }
+    button.display();
 
     // for testing
     //fill(0);
@@ -96,95 +99,31 @@ function touchMoved() {
 }
 
 function touchEnded() {
-    if (is_tap()) {
+    if (isTap()) {
         // Next Button
         if (button.is_next_tapped(touchX, touchY)) {
             if (pageNum !== pageLength - 1) {
-                infoFlag = false;
+                //infoFlag = false;
                 pageNum++;
                 page[pageNum].init();
             }
             // Back Button
         } else if (button.is_back_tapped(touchX, touchY)) {
             if (pageNum !== 0) {
-                infoFlag = false;
+                //infoFlag = false;
                 pageNum--;
                 page[pageNum].init();
-            }
-        } else if (button.is_info_tapped(touchX, touchY)) {
-            if (infoFlag) {
-                icons = [];
-                infoFlag = false;
-            } else {
-                sparqlClient.setKomaQuery(page[pageNum].getKomaNumFirstLast());
-                sparqlClient.request(function(req) {
-                    var tmp = req.getJson();
-                    var komaObjects = tmp.results.bindings;
-                    console.log(komaObjects);
-
-                    var foods = [];
-                    var foodsKoma = [];
-                    var places = [];
-                    var placesKoma = [];
-                    for (var i = 0; i < komaObjects.length; i++) {
-                        if (typeof komaObjects[i]['food'] !== "undefined") {
-                            foods.push(komaObjects[i]['food'].value);
-                            for (var j = 0; j < page[pageNum].komaArray.length; j++) {
-                                if (komaObjects[i]['koma'].value == page[pageNum].komaArray[j].komaNum) {
-                                    foodsKoma.push(j);
-                                }
-                            }
-                        }
-                        if (typeof komaObjects[i]['place'] !== "undefined") {
-                            places.push(komaObjects[i]['place'].value);
-                            places.push(komaObjects[i]['koma'].value);
-                        }
-                        komaObjects[i]['koma'].value;
-                    }
-
-
-                    if (foods.length !== 0) {
-                        sparqlClient.setFoodQuery(foods);
-                        sparqlClient.request(function(req) {
-                            var tmp = req.getJson();
-                            var foodObjects = tmp.results.bindings;
-                            console.log(foodObjects);
-                            for (var i = 0; i < foodObjects.length; i++) {
-                                var icon = new Icon('food', foodObjects[i]['label'].value, foodObjects[i]['des'].value);
-                                var position = page[pageNum].getKomaPosition(foodsKoma[i]);
-                                icon.setPosition(position['posX'], position['posY']);
-                                icons.push(icon);
-                            }
-
-                            infoFlag = !infoFlag;
-                        });
-                    }
-                    if (places.length !== 0) {
-                        sparqlClient.setFoodQuery(places);
-                        sparqlClient.request(function(req) {
-                            var tmp = req.getJson();
-                            console.log(tmp);
-                        });
-                    }
-                });
             }
         } else {
             page[pageNum].clickedKomaNum(touchX, touchY);
         }
-
-        if (infoFlag) {
-            for (var i = 0; i < icons.length; i++) {
-
-            }
-        }
     }
-
 }
 
-function is_tap() {
+function isTap() {
     return (startedTapX == touchX && startedTapY == touchY);
 }
 
-function is_iphone5() {
+function isIphone5() {
     return displayHeight === 568;
 }

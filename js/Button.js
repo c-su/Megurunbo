@@ -2,22 +2,22 @@ function Button(){
 	this.button_size = width / 7;
 	this.next_img = loadImage("./img/icon/next.png");
 	this.back_img = loadImage("./img/icon/back.png");
-	this.info_img = loadImage("./img/icon/info.png");
+	//this.info_img = loadImage("./img/icon/info.png");
 }
 
 Button.prototype.display = function() {
-	this.display_info();
+	//this.display_info();
 	this.display_back();
 	this.display_next();
 };
-
+/*
 // Info button
 Button.prototype.display_info = function() {
 	push();
 	tint(255, 200);
 	image(this.info_img, width-this.button_size, this.button_size/4, this.button_size, this.button_size);
 	pop();
-};
+};*/
 
 // Next button
 Button.prototype.display_next = function() {
@@ -35,19 +35,23 @@ Button.prototype.display_back = function() {
 	pop();
 };
 
-Button.prototype.is_next_tapped = function(current_x, current_y) {
-	return (current_x > 0 && current_x < this.button_size && current_y > (height / 2) && current_y < (height / 2) + this.button_size);
+
+
+
+Button.prototype.is_next_tapped = function(currentX, currentY) {
+	return (currentX > 0 && currentX < this.button_size && currentY > (height / 2) && currentY < (height / 2) + this.button_size);
 };
 
 
-Button.prototype.is_back_tapped = function(current_x, current_y) {
-	return (current_x > width - this.button_size && current_x < width && current_y > (height / 2) && current_y < (height / 2) + this.button_size);
+Button.prototype.is_back_tapped = function(currentX, currentY) {
+	return (currentX > width - this.button_size && currentX < width && currentY > (height / 2) && currentY < (height / 2) + this.button_size);
 };
 
-Button.prototype.is_info_tapped = function(current_x, current_y) {
-	return current_x > width-this.button_size && current_x < width-this.button_size + this.button_size && current_y > this.button_size/4 && current_y < this.button_size/4 + this.button_size;
+/*
+Button.prototype.is_info_tapped = function(currentX, currentY) {
+	return currentX > width-this.button_size && currentX < width-this.button_size + this.button_size && currentY > this.button_size/4 && currentY < this.button_size/4 + this.button_size;
 };
-
+*/
 /*
 Button.prototype.display_info = function() {
 	push();
