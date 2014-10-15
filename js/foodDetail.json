@@ -1,0 +1,17 @@
+{
+	"lyonnaise":{
+				"image_name":"lyonnaise",
+				"country":"フランス",
+				"description":"リヨネーズとは、マスタード入りドレッシングで和えた葉野菜の上にベーコン、ポーチドエッグ、クルトンを乗せたサラダのこと。"
+	},
+	"ajillo":{
+				"image_name":"ajillo",
+				"country":"スペイン",
+				"description":"アヒージョとは、スペイン語で「ニンニク風味」を表す言葉であり、海老、エスカルゴなどをオリーブオイルとニンニクで煮込んだ料理のこと。"
+	},
+	"arrabbiata":{
+				"image_name":"arrabbiata",
+				"country":"イタリア",
+				"description":"アラビアータとは、イタリア料理で、唐辛子を利かせたトマトソースのこと。"
+	}
+}

@@ -1,4 +1,4 @@
-var pageLength = 17;
+var pageLength = 2;
 var speedRate = 0.0;
 var pageNum = 0;
 var startedTapX;
@@ -7,7 +7,7 @@ var page = [];
 var file = [];
 var data = [];
 var imageOriginWidth = 700;
-var imageOriginHeight = 1020;
+var imageOriginHeight = 970;
 var imageWidth = 0.0;
 var resizeRate = 0.0;
 var imageHeight = 0.0;

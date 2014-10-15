@@ -122,7 +122,7 @@ Page.prototype.showHideToolTip = function() {
         fill(0);
         textSize(16);
         var foldedFoodDescription = "";
-        var lineLength = 16;
+        var lineLength = 24;
         for (i=0; i<this.foodDescription.length; i+=lineLength){
             var slicedFoodDescription = "";
             slicedFoodDescription = this.foodDescription.slice(i, i+lineLength);
@@ -130,7 +130,7 @@ Page.prototype.showHideToolTip = function() {
         }
         console.log(foldedFoodDescription);
         rectMode(CORNER);
-        text(foldedFoodDescription, width/2-width*3/8+48, height/2+24, width/2+width*3/8-64, height);
+        text(foldedFoodDescription, width/2-width*3/8+22, height/2+24, width/2+width*3/8-60, height);
         pop();
     }
     else {
