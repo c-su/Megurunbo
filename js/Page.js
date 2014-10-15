@@ -115,14 +115,14 @@ Page.prototype.showHideToolTip = function() {
         push();
         console.log("OK");
         imageMode(CENTER);
-        image(this.foodImage, width/2, height/2-width*3/12, width*3/6, width*3/6);
+        image(this.foodImage, width/2, height/2-width*3/12, width*3/4, width*3/4);
         rectMode(CENTER);
         fill(255);
-        rect(width/2, height/2+width*3/24, width*3/6, width*3/12);
+        rect(width/2, height/2+width*3/16, width*3/4, width*3/16);
         fill(0);
         textSize(16);
         var foldedFoodDescription = "";
-        var lineLength = 16;
+        var lineLength = 24;
         for (i=0; i<this.foodDescription.length; i+=lineLength){
             var slicedFoodDescription = "";
             slicedFoodDescription = this.foodDescription.slice(i, i+lineLength);
@@ -130,7 +130,7 @@ Page.prototype.showHideToolTip = function() {
         }
         console.log(foldedFoodDescription);
         rectMode(CORNER);
-        text(foldedFoodDescription, width/2-width*3/12+20, height/2+18, width/2+width*3/12-70, height);
+        text(foldedFoodDescription, width/2-width*3/8+22, height/2+width*3/20, width/2+width*3/8-60, height);
         pop();
     }
     else {
@@ -138,7 +138,6 @@ Page.prototype.showHideToolTip = function() {
     }
     
 };
-
 Page.prototype.exitToolTipMode = function() {
     if (this.isShowToolTip) {
         this.isShowToolTip = false;
